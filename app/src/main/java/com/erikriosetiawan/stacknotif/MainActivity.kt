@@ -2,7 +2,9 @@ package com.erikriosetiawan.stacknotif
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
@@ -50,12 +52,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        stackNotif.clear()
+        idNotification = 0
+    }
+
     private fun sendNotif() {
         val mNotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val largeIcon =
             BitmapFactory.decodeResource(resources, R.drawable.ic_baseline_notifications_24)
-
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        val pendingIntent =
+            PendingIntent.getActivity(
+                this,
+                NOTIFICATION_REQUEST_CODE,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
         val mBuilder: NotificationCompat.Builder
 
         if (idNotification < MAX_NOTIFICATION) {
@@ -65,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                 .setSmallIcon(R.drawable.ic_baseline_mail_24)
                 .setLargeIcon(largeIcon)
                 .setGroup(GROUP_KEY_EMAILS)
+                .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
         } else {
             val inboxStyle = NotificationCompat.InboxStyle()
