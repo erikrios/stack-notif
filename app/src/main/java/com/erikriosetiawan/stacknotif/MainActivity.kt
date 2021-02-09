@@ -95,6 +95,7 @@ class MainActivity : AppCompatActivity() {
                 .setSmallIcon(R.drawable.ic_baseline_mail_24)
                 .setGroup(GROUP_KEY_EMAILS)
                 .setGroupSummary(true)
+                .setContentIntent(pendingIntent)
                 .setStyle(inboxStyle)
                 .setAutoCancel(true)
         }
